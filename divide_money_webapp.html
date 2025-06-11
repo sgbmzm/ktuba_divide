@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>מחשבון חלוקת כתובה</title>
+    <style>
+        body {
+            direction: rtl;
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+        }
+        label, input, button {
+            display: block;
+            margin: 10px 0;
+        }
+        .woman-input {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>מחשבון חלוקת כתובה</h1>
+    <label>כמה כסף הבעל השאיר:</label>
+    <input type="number" id="totalMoney" placeholder="הכנס סכום בש"ח">
+
+    <div id="womenContainer"></div>
+    <button onclick="addWoman()">הוסף אשה</button>
+    <button onclick="calculateDivision()">חשב חלוקה</button>
+
+    <h2>תוצאות:</h2>
+    <div id="results"></div>
+
+    <script>
+        let women = [];
+
+        function addWoman() {
+            const container = document.getElementById('womenContainer');
+            const div = document.createElement('div');
+            div.className = 'woman-input';
+            const index = women.length;
+            div.innerHTML = `
+                <label>שם:</label>
+                <input type="text" id="name${index}">
+                <label>סכום כתובה:</label>
+                <input type="number" id="ktuba${index}">
+            `;
+            container.appendChild(div);
+            women.push({name: '', ktuba: 0, mekabelet: 0});
+        }
+
+        function calculateDivision() {
+            const totalMoney = parseFloat(document.getElementById('totalMoney').value);
+            women = women.map((w, i) => {
+                return {
+                    name: document.getElementById(`name${i}`).value,
+                    ktuba: parseFloat(document.getElementById(`ktuba${i}`).value),
+                    mekabelet: 0
+                }
+            });
+
+            let result = divideMoney(JSON.parse(JSON.stringify(women)), totalMoney);
+            displayResults(result);
+        }
+
+        function divideMoney(debts, total_money_left) {
+            let total_debt = debts.reduce((sum, d) => sum + d.ktuba, 0);
+
+            if (total_money_left >= total_debt) {
+                debts.forEach(d => d.mekabelet = d.ktuba);
+                return debts;
+            }
+
+            let half_debt = total_debt / 2;
+            let remaining_money = total_money_left;
+            let remaining_women = debts.length;
+
+            for (let i = 0; i < debts.length; i++) {
+                let ktuba = debts[i].ktuba;
+                let half_ktuba = ktuba / 2;
+                let is_last = remaining_women === 1;
+
+                if (!is_last && ((remaining_money - half_ktuba) / (remaining_women - 1)) >= half_ktuba) {
+                    debts[i].mekabelet += half_ktuba;
+                    remaining_money -= half_ktuba;
+                    remaining_women--;
+                } else {
+                    let amount = remaining_money / remaining_women;
+                    if (amount > half_ktuba) amount = half_ktuba;
+                    debts[i].mekabelet += amount;
+                    remaining_money -= amount;
+                    remaining_women--;
+                }
+            }
+
+            if (remaining_money > 0.01) {
+                return divideMoney(debts, remaining_money);
+            }
+            return debts;
+        }
+
+        function displayResults(results) {
+            const container = document.getElementById('results');
+            container.innerHTML = '';
+            results.forEach(w => {
+                const div = document.createElement('div');
+                div.textContent = `${w.name} מקבלת ${w.mekabelet.toFixed(2)} ש"ח`;
+                container.appendChild(div);
+            });
+        }
+    </script>
+</body>
+</html>
