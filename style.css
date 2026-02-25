@@ -1,12 +1,7 @@
-/* שמירה על עברית, יישור לימין, גופן, גובה שורה */
-body {
-    direction: rtl;
-    text-align: right;
-    font-family: 'David', serif;
-    line-height: 1.4;
-}
-
-/* שמירה על ירידות שורה בכל פסקאות, רשימות וכותרות */
-p, li, span, h1, h2, h3 {
-    white-space: pre-wrap;
+.article {
+    direction: rtl;         /* מ‑שמאל לימין */
+    text-align: right;       /* יישור לשמאל */
+    white-space: pre-wrap;  /* שומר רווחים וירידות שורה */
+    font-family: 'David', serif;  /* הגופן שלך */
+    line-height: 1.4;       /* גובה שורה */
 }
