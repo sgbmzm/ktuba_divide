@@ -1,6 +1,6 @@
 .article {
-    direction: ltr;         /* מ‑שמאל לימין */
-    text-align: left;       /* יישור לשמאל */
+    direction: rtl;         /* מימין לשמאל */
+    text-align: right;       /* יישור לימין */
     white-space: pre-wrap;  /* שומר רווחים וירידות שורה */
     font-family: 'David', serif;  /* הגופן שלך */
     line-height: 1.4;       /* גובה שורה */
